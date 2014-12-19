@@ -4,12 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.ignore.com"
+        xmlns:h="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF"
         mc:Ignorable="d ignore"
-        Height="300"
-        Width="300"
-        Title="MVVM Light Application"
-        DataContext="{Binding Main, Source={StaticResource Locator}}">
-    
+        Height="450"
+        Width="450"
+        Title="LWC9 - Last Week on Channel 9"
+        DataContext="{Binding Main, Source={StaticResource Locator}}" 
+        Icon="Resources/Images/C9-1-32x32.ico">
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,14 +21,71 @@
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <TextBlock FontSize="36"
-                   FontWeight="Bold"
-                   Foreground="Purple"
-                   Text="{Binding WelcomeTitle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   TextWrapping="Wrap" />
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label  Grid.Row="0" Grid.Column="0"  Content="Image URL:"></Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding ImageUrl}" x:Name="ImageUrlTextbox">
+                <TextBox.ContextMenu>
+                    <ContextMenu Name="ContextMenuImagePaste"  StaysOpen="true">
+                        <MenuItem Header="Paste HTML" Name ="MenuItemImagePaste"  Click="MenuItemImagePasteHtlm_Click"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
+            <Label  Grid.Row="1" Grid.Column="0"  Content="Entry HREF:"></Label>
+            <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding EntryUrl}" />
+            <Label  Grid.Row="2" Grid.Column="0"  Content="Title:"></Label>
+            <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding Title}" />
+            <Label  Grid.Row="3" Grid.Column="0"  Content="Body:"></Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding BodyHtml}" x:Name="BodyTextbox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap">
+                <TextBox.ContextMenu>
+                    <ContextMenu Name="ContextMenu1"  StaysOpen="true">
+                        <MenuItem Header="Paste HTML" Name ="MenuItemPaste"  Click="MenuItemPasteHtl_Click"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
+            <Button Grid.Row="3" Grid.Column="2" Content="Add" Margin="3" Command="{Binding AddStoryCommand, Mode=OneWay}" VerticalAlignment="Bottom" />
+        </Grid>
+        <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding Stories}" IsReadOnly="True" SelectedItem="{Binding SelectedStory}" CanUserAddRows="False" CanUserDeleteRows="True" LoadingRow="DataGrid_LoadingRow"> 
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding ImageUrl}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+                <DataGridTemplateColumn Header="Body">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <h:HtmlPanel Text="{Binding BodyHtml}" Width="400" VerticalAlignment="Top"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="EntryUrl" Binding="{Binding EntryUrl}"/>
+            </DataGrid.Columns>
 
+        </DataGrid>
+
+        <Button Grid.Row="5" Content="Copy Post to Clipboard" Width="145" Height="20" VerticalAlignment="Top" Command="{Binding CopyPostToClipboardCommand, Mode=OneWay}" Margin="3"/>
     </Grid>
 </Window>
