@@ -16,6 +16,7 @@ namespace LastWeekOnChannel9UI
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
+            Title = Title + " (" + System.Windows.Forms.Application.ProductVersion + ")";
         }
 
         private void MenuItemPasteHtml_Click(object sender, RoutedEventArgs e)

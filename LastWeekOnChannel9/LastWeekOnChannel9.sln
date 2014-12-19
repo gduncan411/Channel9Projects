@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LastWeekOnChannel9UI", "LastWeekOnChannel9UI\LastWeekOnChannel9UI.csproj", "{4C9DC928-D8ED-4B0B-981E-9A88C2AF646F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowLayout", "..\WindowLayout\WindowLayout.csproj", "{DC64758F-3894-497B-A442-74DC509587CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4C9DC928-D8ED-4B0B-981E-9A88C2AF646F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C9DC928-D8ED-4B0B-981E-9A88C2AF646F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C9DC928-D8ED-4B0B-981E-9A88C2AF646F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC64758F-3894-497B-A442-74DC509587CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC64758F-3894-497B-A442-74DC509587CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC64758F-3894-497B-A442-74DC509587CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC64758F-3894-497B-A442-74DC509587CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

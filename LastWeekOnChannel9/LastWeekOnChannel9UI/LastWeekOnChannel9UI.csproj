@@ -133,7 +133,12 @@
   <ItemGroup>
     <Resource Include="Resources\Images\C9-1-32x32.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\WindowLayout\WindowLayout.csproj">
+      <Project>{dc64758f-3894-497b-a442-74dc509587cc}</Project>
+      <Name>WindowLayout</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

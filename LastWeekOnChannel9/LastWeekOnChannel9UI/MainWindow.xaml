@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.ignore.com"
         xmlns:h="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF"
+        xmlns:settings="clr-namespace:WindowLayout;assembly=WindowLayout"
         mc:Ignorable="d ignore"
         Height="450"
         Width="450"
         Title="LWC9 - Last Week on Channel 9"
         DataContext="{Binding Main, Source={StaticResource Locator}}" 
-        Icon="Resources/Images/C9-1-32x32.ico">
+        Icon="Resources/Images/C9-1-32x32.ico" settings:WindowSettings.Save="True" >
 
     <Window.Resources>
         <ResourceDictionary>
