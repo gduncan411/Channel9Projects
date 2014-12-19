@@ -42,30 +42,39 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label  Grid.Row="0" Grid.Column="0"  Content="Image URL:"></Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding ImageUrl}" x:Name="ImageUrlTextbox">
+            <Label  Grid.Row="0" Grid.Column="0"  Content="Image Url:" ></Label>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding ImageUrl}" x:Name="ImageUrlTextbox">
                 <TextBox.ContextMenu>
                     <ContextMenu Name="ContextMenuImagePaste"  StaysOpen="true">
-                        <MenuItem Header="Paste HTML" Name ="MenuItemImagePaste"  Click="MenuItemImagePasteHtlm_Click"/>
+                        <MenuItem Header="Paste HTML" Name ="MenuItemImagePaste" Command="{Binding PasteImageHtmlCommand, Mode=OneWay}"  />
                     </ContextMenu>
                 </TextBox.ContextMenu>
             </TextBox>
-            <Label  Grid.Row="1" Grid.Column="0"  Content="Entry HREF:"></Label>
+            <Button Grid.Row="0" Grid.Column="2" Margin="3" Content="P-h" Command="{Binding PasteImageHtmlCommand, Mode=OneWay}" ToolTip="Paste HTML from Clipboard" />
+            <Label  Grid.Row="1" Grid.Column="0"  Content="Entry Url:" Height="26" VerticalAlignment="Bottom" ></Label>
             <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding EntryUrl}" />
-            <Label  Grid.Row="2" Grid.Column="0"  Content="Title:"></Label>
+            <Label  Grid.Row="2" Grid.Column="0"  Content="Title Text:" Margin="0,0,0.5,0"></Label>
             <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="3" Text="{Binding Title}" />
-            <Label  Grid.Row="3" Grid.Column="0"  Content="Body:"></Label>
-            <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding BodyHtml}" x:Name="BodyTextbox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap">
+            <Label  Grid.Row="3" Grid.Column="0"  Content="Body Html:" ></Label>
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding BodyHtml}" x:Name="BodyTextbox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" >
                 <TextBox.ContextMenu>
                     <ContextMenu Name="ContextMenu1"  StaysOpen="true">
-                        <MenuItem Header="Paste HTML" Name ="MenuItemPaste"  Click="MenuItemPasteHtl_Click"/>
+                        <MenuItem Header="Paste HTML" Name ="MenuItemPaste" Command="{Binding PasteBodyHtmlCommand, Mode=OneWay}" />
                     </ContextMenu>
                 </TextBox.ContextMenu>
             </TextBox>
-            <Button Grid.Row="3" Grid.Column="2" Content="Add" Margin="3" Command="{Binding AddStoryCommand, Mode=OneWay}" VerticalAlignment="Bottom" />
+            <Button Grid.Row="3" Grid.Column="2" Margin="3" Content="P-h" Command="{Binding PasteBodyHtmlCommand, Mode=OneWay}" ToolTip="Paste HTML from Clipboard" />
+            <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="Add to List" Margin="3" Width="70" HorizontalAlignment="Right" Command="{Binding AddStoryCommand, Mode=OneWay}" VerticalAlignment="Bottom" Grid.RowSpan="2" />
         </Grid>
-        <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding Stories}" IsReadOnly="True" SelectedItem="{Binding SelectedStory}" CanUserAddRows="False" CanUserDeleteRows="True" LoadingRow="DataGrid_LoadingRow"> 
+        <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding Stories}" IsReadOnly="True" SelectedItem="{Binding SelectedStory}" CanUserAddRows="False" CanUserDeleteRows="True" LoadingRow="DataGrid_LoadingRow">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Move Up" Command="{Binding MoveSelectedStoryUpCommand, Mode=OneWay}" />
+                    <MenuItem Header="Move Down" Command="{Binding MoveSelectedStoryDownCommand, Mode=OneWay}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>

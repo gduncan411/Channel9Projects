@@ -3,6 +3,8 @@ using GalaSoft.MvvmLight.CommandWpf;
 using LastWeekOnChannel9UI.Model;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace LastWeekOnChannel9UI.ViewModel
 {
@@ -257,8 +259,88 @@ namespace LastWeekOnChannel9UI.ViewModel
                 }
 
                 _selectedStory = value;
+                MoveSelectedStoryUpCommand.RaiseCanExecuteChanged();
+                MoveSelectedStoryDownCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged(() => SelectedStory);
             }
+        }
+
+        private RelayCommand _moveSelectedStoryUpCommand;
+
+        /// <summary>
+        /// Gets the MoveSelectedStoryUpCommand.
+        /// </summary>
+        public RelayCommand MoveSelectedStoryUpCommand
+        {
+            get
+            {
+                return _moveSelectedStoryUpCommand ?? (_moveSelectedStoryUpCommand = new RelayCommand(
+                    ExecuteMoveSelectedStoryUpCommand,
+                    CanExecuteMoveSelectedStoryUpCommand));
+            }
+        }
+
+        private void ExecuteMoveSelectedStoryUpCommand()
+        {
+            if (!MoveSelectedStoryUpCommand.CanExecute(null))
+            {
+                return;
+            }
+
+            var workingstory = SelectedStory;
+            var startingindex = Stories.IndexOf(SelectedStory);
+            Stories.Remove(SelectedStory);
+            Stories.Insert(startingindex - 1, workingstory);
+
+        }
+
+        private bool CanExecuteMoveSelectedStoryUpCommand()
+        {
+            if (SelectedStory == null)
+                return false;
+            else if (Stories.IndexOf(SelectedStory) == 0)
+                return false;
+            else
+                return true;
+        }
+
+        private RelayCommand _moveSelectedStoryDownCommand;
+
+        /// <summary>
+        /// Gets the MoveSelectedStoryDownCommand.
+        /// </summary>
+        public RelayCommand MoveSelectedStoryDownCommand
+        {
+            get
+            {
+                return _moveSelectedStoryDownCommand ?? (_moveSelectedStoryDownCommand = new RelayCommand(
+                    ExecuteMoveSelectedStoryDownCommand,
+                    CanExecuteMoveSelectedStoryDownCommand));
+            }
+        }
+
+        private void ExecuteMoveSelectedStoryDownCommand()
+        {
+            if (!MoveSelectedStoryDownCommand.CanExecute(null))
+            {
+                return;
+            }
+
+            var workingstory = SelectedStory;
+            var startingindex = Stories.IndexOf(SelectedStory);
+            Stories.Remove(SelectedStory);
+            Stories.Insert(startingindex + 1, workingstory);
+
+        }
+
+        private bool CanExecuteMoveSelectedStoryDownCommand()
+        {
+            if (SelectedStory == null)
+                return false;
+            else if (Stories.IndexOf(SelectedStory) == Stories.Count - 1 )
+                return false;
+            else
+             return true;
         }
 
         private RelayCommand _copyPostToClipboardCommand;
@@ -316,6 +398,70 @@ namespace LastWeekOnChannel9UI.ViewModel
                 return true;
         }
 
+        private RelayCommand _pasteImageHtmlCommand;
+
+        /// <summary>
+        /// Gets the PasteImageHtmlCommand.
+        /// </summary>
+        public RelayCommand PasteImageHtmlCommand
+        {
+            get
+            {
+                return _pasteImageHtmlCommand
+                    ?? (_pasteImageHtmlCommand = new RelayCommand(ExecutePasteImageHtmlCommand));
+            }
+        }
+
+        private void ExecutePasteImageHtmlCommand()
+        {
+             if (Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                var rawhtml = Clipboard.GetText(TextDataFormat.Html);
+
+                int start = rawhtml.IndexOf("<!--StartFragment-->");
+                int end = rawhtml.IndexOf("<!--EndFragment-->");
+                var html = rawhtml.Substring(start + 20, end - start - 20);
+                string regexImgSrc = @"<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>";
+                MatchCollection matchesImgSrc = Regex.Matches(html, regexImgSrc, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                foreach (Match m in matchesImgSrc)
+                {
+                    string href = m.Groups[1].Value;
+                    ImageUrl = href;
+                    break;
+                }
+
+                          //Clipboard.SetText(replacementHtmlText, TextDataFormat.Html);
+            }
+        }
+
+        private RelayCommand _pasteBodyHtmlCommand;
+
+        /// <summary>
+        /// Gets the PasteBodyHtmlCommand.
+        /// 
+        /// </summary>
+        public RelayCommand PasteBodyHtmlCommand
+        {
+            get
+            {
+                return _pasteBodyHtmlCommand
+                    ?? (_pasteBodyHtmlCommand = new RelayCommand(ExecutePasteBodyHtmlCommand));
+            }
+        }
+
+        private void ExecutePasteBodyHtmlCommand()
+        {
+            if (Clipboard.ContainsText(TextDataFormat.Html))
+            {
+                var rawhtml = Clipboard.GetText(TextDataFormat.Html);
+
+                int start = rawhtml.IndexOf("<!--StartFragment-->");
+                int end = rawhtml.IndexOf("<!--EndFragment-->");
+                BodyHtml = rawhtml.Substring(start + 20, end - start - 20);
+
+                //Clipboard.SetText(replacementHtmlText, TextDataFormat.Html);
+            }
+        }
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
