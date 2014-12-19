@@ -10,3 +10,4 @@ It includes Channel 9 specific classes that drive the two column layout.
 * http://www.galasoft.ch/mvvm
 * http://blog.tcx.be/2005/08/copying-html-fragment-to-clipboard.html
 * https://htmlrenderer.codeplex.com/
+* http://andora.us/blog/2011/01/11/wpf-4-datagrid-getting-the-row-number-into-the-rowheader/
