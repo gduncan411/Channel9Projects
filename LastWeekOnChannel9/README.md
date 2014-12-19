@@ -6,7 +6,8 @@ This is a quick and dirty utility that I use to help me create the weekly Last W
 It includes Channel 9 specific classes that drive the two column layout.
 
 Credit:
-http://jake.ginnivan.net/remembering-wpf-window-positions/
-http://www.galasoft.ch/mvvm
-http://blog.tcx.be/2005/08/copying-html-fragment-to-clipboard.html
-https://htmlrenderer.codeplex.com/
+(http://jake.ginnivan.net/remembering-wpf-window-positions/)
+
+(http://www.galasoft.ch/mvvm)
+(http://blog.tcx.be/2005/08/copying-html-fragment-to-clipboard.html)
+(https://htmlrenderer.codeplex.com/)
