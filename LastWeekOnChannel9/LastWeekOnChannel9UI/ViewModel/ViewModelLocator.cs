@@ -30,6 +30,8 @@ namespace LastWeekOnChannel9UI.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
+
+            SimpleIoc.Default.Register<BrowseViewModel>();
         }
 
         /// <summary>
@@ -43,6 +45,20 @@ namespace LastWeekOnChannel9UI.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Main property.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public BrowseViewModel Browse
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<BrowseViewModel>();
             }
         }
 

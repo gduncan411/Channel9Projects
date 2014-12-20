@@ -16,12 +16,13 @@ namespace LastWeekOnChannel9UI.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-
+            
         }
 
         /// <summary>
@@ -462,6 +463,62 @@ namespace LastWeekOnChannel9UI.ViewModel
                 //Clipboard.SetText(replacementHtmlText, TextDataFormat.Html);
             }
         }
+
+
+        private RelayCommand _showBrowseWindowCommand;
+
+        /// <summary>
+        /// Gets the ShowBrowseWindowCommand.
+        /// </summary>
+        public RelayCommand ShowBrowseWindowCommand
+        {
+            get
+            {
+                return _showBrowseWindowCommand
+                    ?? (_showBrowseWindowCommand = new RelayCommand(ExecuteShowBrowseWindowCommand));
+            }
+        }
+
+        private void ExecuteShowBrowseWindowCommand()
+        {
+            var b = new BrowseView();
+            b.ShowDialog();
+
+            var vm = (BrowseViewModel)b.DataContext;
+
+            if (Stories == null)
+                Stories = new ObservableCollection<Story>();
+
+            foreach (var item in vm.C9Entries)
+            {
+                if (item.Selected)
+                {
+                    var entryBody = GetEntryBody(item.EntryUrl);
+
+                    Stories.Add(new Story
+                    {
+                        Title = item.Title,
+                        ImageUrl = item.ImageUrl,
+                        EntryUrl = item.EntryUrl,
+                        BodyHtml = entryBody
+                    });
+                }
+            }
+            
+        }
+
+        private string GetEntryBody(string entryUrl)
+        {
+            string result = string.Empty;
+
+            var htmWeb = new HtmlAgilityPack.HtmlWeb();
+            var htmDoc = htmWeb.Load(entryUrl);
+
+            //var links = htmDoc.DocumentNode.SelectSingleNode("//div[@class='entry-body']");
+            result = htmDoc.DocumentNode.SelectSingleNode("//div[@id='entry-body']").InnerHtml;
+            
+            return result;
+         }
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
