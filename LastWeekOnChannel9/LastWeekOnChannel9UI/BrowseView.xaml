@@ -3,18 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:settings="clr-namespace:WindowLayout;assembly=WindowLayout"
         xmlns:ignore="http://www.ignore.com"
         mc:Ignorable="d ignore"
-        DataContext="{Binding Browse, Source={StaticResource Locator}}">
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Label Content="Channel 9 Shows" />
-        <DataGrid Grid.Row="1" AutoGenerateColumns="True" ItemsSource="{Binding C9Entries}" IsReadOnly="False" CanUserAddRows="False"/>
-        <Button Grid.Row="2" Content="Load Next Page" Margin="3" Width="85" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />
-    </Grid>
+        DataContext="{Binding Browse, Source={StaticResource Locator}}" 
+        Title="Browse Channel 9 Entries" settings:WindowSettings.Save="True" >
+    <xctk:BusyIndicator x:Name="_busyIndicator" IsBusy="{Binding IsBusy}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Channel 9 All Entries:" />
+            <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding C9Entries}" IsReadOnly="False" CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Binding="{Binding Selected}" />
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding ImageUrl}" VerticalAlignment="Top"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Pub Date" Binding="{Binding PubDate}"/>
+                    <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
+                    <DataGridTextColumn Header="Entry Url" Binding="{Binding EntryUrl}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button Grid.Row="2" Content="Load Next Page" Margin="3" Width="90" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />
+        </Grid>
+    </xctk:BusyIndicator>
 </Window>

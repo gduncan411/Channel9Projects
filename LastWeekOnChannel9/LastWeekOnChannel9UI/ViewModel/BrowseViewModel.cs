@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Threading;
 using LastWeekOnChannel9UI.Model;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LastWeekOnChannel9UI.ViewModel
 {
@@ -20,43 +22,59 @@ namespace LastWeekOnChannel9UI.ViewModel
         /// 
 
         private int _lastLoadedPage = 0;
+
         public BrowseViewModel()
         {
-            if (!base.IsInDesignMode)
-                LoadEntries(1);
+
         }
 
-        private void LoadEntries(int page)
+        private async Task LoadEntries(int page)
         {
-            if (C9Entries == null)
-                C9Entries = new ObservableCollection<C9Entry>();
-
-            var htmWeb = new HtmlAgilityPack.HtmlWeb();
-            var htmDoc = htmWeb.Load("http://channel9.msdn.com/Browse/AllContent?page=" + page.ToString());
-
-            var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
-
-            foreach (var link in links)
+            
+            Task t = new Task (() =>
             {
-                //string imageurl = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("src", "");
-                //string altTitle = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("alt", "");
-                //string url = "http://channel9.msdn.com" + link.SelectSingleNode("//a").GetAttributeValue("href", "");
 
-                string imageurl = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("src", "");
-                string altTitle = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("alt", "");
-                string url = "http://channel9.msdn.com" + link.ChildNodes[1].GetAttributeValue("href", "");
-                string pubdate = link.NextSibling.NextSibling.ChildNodes[3].ChildNodes[3].InnerText;
+                if (C9Entries == null)
+                    C9Entries = new ObservableCollection<C9Entry>();
 
-                C9Entries.Add(new C9Entry()
+                var htmWeb = new HtmlAgilityPack.HtmlWeb();
+                var htmDoc = htmWeb.Load("http://channel9.msdn.com/Browse/AllContent?page=" + page.ToString());
+
+                var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
+
+                foreach (var link in links)
+                {
+                    //string imageurl = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("src", "");
+                    //string altTitle = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("alt", "");
+                    //string url = "http://channel9.msdn.com" + link.SelectSingleNode("//a").GetAttributeValue("href", "");
+
+                    string imageurl = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("src", "");
+                    string altTitle = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("alt", "");
+                    string url = "http://channel9.msdn.com" + link.ChildNodes[1].GetAttributeValue("href", "");
+                    string pubdate = link.NextSibling.NextSibling.ChildNodes[3].ChildNodes[3].InnerText;
+
+                    DispatcherHelper.CheckBeginInvokeOnUI(
+                    () =>
                     {
-                        Title = altTitle,
-                        ImageUrl = imageurl,
-                        EntryUrl = url,
-                        PubDate = pubdate
+                        C9Entries.Add(new C9Entry()
+                        {
+                            Title = altTitle,
+                            ImageUrl = imageurl,
+                            EntryUrl = url,
+                            PubDate = pubdate
+                        });
                     });
-            }
 
-            _lastLoadedPage = page;
+                }
+
+                _lastLoadedPage = page;
+            });
+
+            // start the task
+            t.Start();
+
+            await t;
+
         }
 
         /// <summary>
@@ -132,9 +150,45 @@ namespace LastWeekOnChannel9UI.ViewModel
             }
         }
 
-        private void ExecuteLoadNextPageCommand()
+        private async void ExecuteLoadNextPageCommand()
         {
-            LoadEntries(++_lastLoadedPage);
+            IsBusy = true;
+
+            Task t = LoadEntries(++_lastLoadedPage);
+
+            await t;
+
+            IsBusy = false;
+        }
+
+        /// <summary>
+        /// The <see cref="IsBusy" /> property's name.
+        /// </summary>
+        public const string IsBusyPropertyName = "IsBusy";
+
+        private bool _isBusy = false;
+
+        /// <summary>
+        /// Sets and gets the IsBusy property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                _isBusy = value;
+                RaisePropertyChanged(() => IsBusy);
+            }
         }
 
     }

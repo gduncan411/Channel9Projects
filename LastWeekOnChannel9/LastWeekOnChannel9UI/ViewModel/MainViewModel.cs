@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Threading;
 using LastWeekOnChannel9UI.Model;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace LastWeekOnChannel9UI.ViewModel
@@ -479,31 +481,47 @@ namespace LastWeekOnChannel9UI.ViewModel
             }
         }
 
-        private void ExecuteShowBrowseWindowCommand()
+        private async void ExecuteShowBrowseWindowCommand()
         {
             var b = new BrowseView();
             b.ShowDialog();
 
             var vm = (BrowseViewModel)b.DataContext;
 
-            if (Stories == null)
-                Stories = new ObservableCollection<Story>();
+            if (vm.C9Entries == null)
+                return;
 
-            foreach (var item in vm.C9Entries)
+            IsBusy = true;
+
+            await Task.Factory.StartNew(() =>
             {
-                if (item.Selected)
-                {
-                    var entryBody = GetEntryBody(item.EntryUrl);
+                if (Stories == null)
+                    Stories = new ObservableCollection<Story>();
 
-                    Stories.Add(new Story
+                foreach (var item in vm.C9Entries)
+                {
+                    if (item.Selected)
                     {
-                        Title = item.Title,
-                        ImageUrl = item.ImageUrl,
-                        EntryUrl = item.EntryUrl,
-                        BodyHtml = entryBody
-                    });
+                        var entryBody = GetEntryBody(item.EntryUrl);
+
+                        DispatcherHelper.CheckBeginInvokeOnUI(
+                        () =>
+                        {
+                            Stories.Add(new Story
+                            {
+                                Title = item.Title,
+                                ImageUrl = item.ImageUrl,
+                                EntryUrl = item.EntryUrl,
+                                BodyHtml = entryBody
+                            });
+                        });
+
+                    }
                 }
-            }
+            });
+
+
+            IsBusy = false;
             
         }
 
@@ -518,7 +536,37 @@ namespace LastWeekOnChannel9UI.ViewModel
             result = htmDoc.DocumentNode.SelectSingleNode("//div[@id='entry-body']").InnerHtml;
             
             return result;
-         }
+        }
+
+        /// <summary>
+        /// The <see cref="IsBusy" /> property's name.
+        /// </summary>
+        public const string IsBusyPropertyName = "IsBusy";
+
+        private bool _isBusy = false;
+
+        /// <summary>
+        /// Sets and gets the IsBusy property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                _isBusy = value;
+                RaisePropertyChanged(() => IsBusy);
+            }
+        }
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
