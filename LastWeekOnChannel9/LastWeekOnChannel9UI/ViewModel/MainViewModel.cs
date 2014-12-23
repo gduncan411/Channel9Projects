@@ -24,6 +24,7 @@ namespace LastWeekOnChannel9UI.ViewModel
         /// </summary>
         public MainViewModel()
         {
+
             
         }
 
