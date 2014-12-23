@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Threading;
 using LastWeekOnChannel9UI.Model;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -107,6 +108,37 @@ namespace LastWeekOnChannel9UI.ViewModel
             }
         }
 
+
+        /// <summary>
+        /// The <see cref="SelectedC9Entry" /> property's name.
+        /// </summary>
+        public const string SelectedC9EntryPropertyName = "SelectedC9Entry";
+
+        private C9Entry _selectedC9Entry;
+
+        /// <summary>
+        /// Sets and gets the SelectedC9Entry property.
+        /// Changes to that property's value raise the PropertyChanged event. 
+        /// </summary>
+        public C9Entry SelectedC9Entry
+        {
+            get
+            {
+                return _selectedC9Entry;
+            }
+
+            set
+            {
+                if (_selectedC9Entry == value)
+                {
+                    return;
+                }
+
+                _selectedC9Entry = value;
+                RaisePropertyChanged(() => SelectedC9Entry);
+            }
+        }
+
         /// <summary>
         /// The <see cref="SelectedC9Entries" /> property's name.
         /// </summary>
@@ -159,6 +191,44 @@ namespace LastWeekOnChannel9UI.ViewModel
             await t;
 
             IsBusy = false;
+        }
+
+        private RelayCommand _viewStoryInBrowserCommand;
+
+        /// <summary>
+        /// Gets the ViewStoryInBrowserCommand.
+        /// </summary>
+        public RelayCommand ViewStoryInBrowserCommand
+        {
+            get
+            {
+                return _viewStoryInBrowserCommand ?? (_viewStoryInBrowserCommand = new RelayCommand(
+                    ExecuteViewStoryInBrowserCommand,
+                    CanExecuteViewStoryInBrowserCommand));
+            }
+        }
+
+        private void ExecuteViewStoryInBrowserCommand()
+        {
+            if (!ViewStoryInBrowserCommand.CanExecute(null))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = SelectedC9Entry.EntryUrl,
+                UseShellExecute = true
+            });
+
+        }
+
+        private bool CanExecuteViewStoryInBrowserCommand()
+        {
+            if (SelectedC9Entry == null)
+                return false;
+            else
+                return true;
         }
 
         /// <summary>

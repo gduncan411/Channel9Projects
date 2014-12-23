@@ -10,26 +10,46 @@
         DataContext="{Binding Browse, Source={StaticResource Locator}}" 
         Title="Browse Channel 9 Entries" settings:WindowSettings.Save="True" >
     <xctk:BusyIndicator x:Name="_busyIndicator" IsBusy="{Binding IsBusy}">
+        
         <Grid>
+            <Grid.Resources>
+                <!-- Found via http://stackoverflow.com/questions/25543923/wpf-toolkit-datagridtextcolumn-with-scrollbar-->
+                <Style x:Key="DataGridTextColumnWithScrollBar" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                <TextBox Name="txtBox" Text="{Binding Content.Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                    VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                                    IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Content="Channel 9 All Entries:" />
-            <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding C9Entries}" IsReadOnly="False" CanUserAddRows="False">
+            <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding C9Entries}" IsReadOnly="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectedItem="{Binding SelectedC9Entry}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open in Browser" Command="{Binding ViewStoryInBrowserCommand, Mode=OneWay}" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn Binding="{Binding Selected}" />
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="200" IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding ImageUrl}" VerticalAlignment="Top"/>
+                                <Image Source="{Binding ImageUrl}" VerticalAlignment="Top" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Pub Date" Binding="{Binding PubDate}"/>
-                    <DataGridTextColumn Header="Title" Binding="{Binding Title}"/>
-                    <DataGridTextColumn Header="Entry Url" Binding="{Binding EntryUrl}" />
+                    <DataGridTextColumn Header="Pub Date" Binding="{Binding PubDate}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Title" Width="250" Binding="{Binding Title}" CellStyle="{StaticResource DataGridTextColumnWithScrollBar}" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Entry Url" Width="250" Binding="{Binding EntryUrl}" CellStyle="{StaticResource DataGridTextColumnWithScrollBar}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Button Grid.Row="2" Content="Load Next Page" Margin="3" Width="90" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />

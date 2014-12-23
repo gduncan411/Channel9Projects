@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Threading;
 using LastWeekOnChannel9UI.Model;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -539,6 +540,44 @@ namespace LastWeekOnChannel9UI.ViewModel
             return result;
         }
 
+
+        private RelayCommand _viewStoryInBrowserCommand;
+
+        /// <summary>
+        /// Gets the ViewStoryInBrowserCommand.
+        /// </summary>
+        public RelayCommand ViewStoryInBrowserCommand
+        {
+            get
+            {
+                return _viewStoryInBrowserCommand ?? (_viewStoryInBrowserCommand = new RelayCommand(
+                    ExecuteViewStoryInBrowserCommand,
+                    CanExecuteViewStoryInBrowserCommand));
+            }
+        }
+
+        private void ExecuteViewStoryInBrowserCommand()
+        {
+            if (!ViewStoryInBrowserCommand.CanExecute(null))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(new ProcessStartInfo
+            {
+                FileName = SelectedStory.EntryUrl,
+                UseShellExecute = true
+            });
+            
+        }
+
+        private bool CanExecuteViewStoryInBrowserCommand()
+        {
+            if (SelectedStory == null)
+                return false;
+            else
+                return true;
+        }
         /// <summary>
         /// The <see cref="IsBusy" /> property's name.
         /// </summary>
