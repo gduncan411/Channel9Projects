@@ -2,7 +2,9 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Threading;
 using LastWeekOnChannel9UI.Model;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ namespace LastWeekOnChannel9UI.ViewModel
         /// 
 
         private int _lastLoadedPage = 0;
+        public Action CloseAction { get; set; }
 
         public BrowseViewModel()
         {
@@ -231,6 +234,7 @@ namespace LastWeekOnChannel9UI.ViewModel
                 return true;
         }
 
+
         /// <summary>
         /// The <see cref="IsBusy" /> property's name.
         /// </summary>
@@ -259,6 +263,47 @@ namespace LastWeekOnChannel9UI.ViewModel
                 _isBusy = value;
                 RaisePropertyChanged(() => IsBusy);
             }
+        }
+
+        private RelayCommand _closeCommand;
+
+        /// <summary>
+        /// Gets the CloseCommand.
+        /// </summary>
+        public RelayCommand CloseCommand
+        {
+            get
+            {
+                return _closeCommand
+                    ?? (_closeCommand = new RelayCommand(ExecuteCloseCommand));
+            }
+        }
+
+        private void ExecuteCloseCommand()
+        {
+            CloseAction();
+        }
+
+        private RelayCommand<CancelEventArgs> _windowClosingCommand;
+
+        /// <summary>
+        /// Gets the WindowClosingCommand.
+        /// </summary>
+        public RelayCommand<CancelEventArgs> WindowClosingCommand
+        {
+            get
+            {
+                return _windowClosingCommand
+                    ?? (_windowClosingCommand = new RelayCommand<CancelEventArgs>(ExecuteWindowClosingCommand));
+            }
+        }
+
+        private void ExecuteWindowClosingCommand(CancelEventArgs parameter)
+        {
+            if (IsBusy)
+                parameter.Cancel = true;
+            else
+                parameter.Cancel = false;
         }
 
     }

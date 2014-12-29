@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using LastWeekOnChannel9UI.ViewModel;
+using System;
+using System.Windows;
 
 namespace LastWeekOnChannel9UI
 {
@@ -13,6 +15,9 @@ namespace LastWeekOnChannel9UI
         public BrowseView()
         {
             InitializeComponent();
+            BrowseViewModel vm = (BrowseViewModel)this.DataContext;
+            vm.CloseAction = new Action(() => this.Close());
+
         }
     }
 }

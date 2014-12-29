@@ -4,11 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:settings="clr-namespace:WindowLayout;assembly=WindowLayout"
         xmlns:ignore="http://www.ignore.com"
         mc:Ignorable="d ignore"
         DataContext="{Binding Browse, Source={StaticResource Locator}}" 
         Title="Browse Channel 9 Entries" settings:WindowSettings.Save="True" >
+    <Window.Resources>
+
+    </Window.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <command:EventToCommand Command="{Binding WindowClosingCommand}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <xctk:BusyIndicator x:Name="_busyIndicator" IsBusy="{Binding IsBusy}">
         
         <Grid>
@@ -52,7 +62,10 @@
                     <DataGridTextColumn Header="Entry Url" Width="250" Binding="{Binding EntryUrl}" CellStyle="{StaticResource DataGridTextColumnWithScrollBar}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Grid.Row="2" Content="Load Next Page" Margin="3" Width="90" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Grid.Row="2" Content="Load Next Page" Margin="3" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />
+                <Button Grid.Row="2" Content="Close and Return Selected" Margin="3" Command="{Binding CloseCommand, Mode=OneWay}" />
+            </StackPanel>
         </Grid>
     </xctk:BusyIndicator>
 </Window>
