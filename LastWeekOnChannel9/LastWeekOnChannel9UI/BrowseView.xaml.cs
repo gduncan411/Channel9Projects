@@ -1,6 +1,6 @@
-﻿using LastWeekOnChannel9UI.ViewModel;
-using System;
+﻿using System;
 using System.Windows;
+using LastWeekOnChannel9UI.ViewModel;
 
 namespace LastWeekOnChannel9UI
 {

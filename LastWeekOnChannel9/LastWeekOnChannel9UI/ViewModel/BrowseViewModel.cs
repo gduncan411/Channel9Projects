@@ -1,13 +1,13 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Threading;
-using LastWeekOnChannel9UI.Model;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Threading;
+using HtmlAgilityPack;
+using LastWeekOnChannel9UI.Model;
 
 namespace LastWeekOnChannel9UI.ViewModel
 {
@@ -41,7 +41,7 @@ namespace LastWeekOnChannel9UI.ViewModel
                 if (C9Entries == null)
                     C9Entries = new ObservableCollection<C9Entry>();
 
-                var htmWeb = new HtmlAgilityPack.HtmlWeb();
+                var htmWeb = new HtmlWeb();
                 var htmDoc = htmWeb.Load("http://channel9.msdn.com/Browse/AllContent?page=" + page.ToString());
 
                 var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
@@ -218,7 +218,7 @@ namespace LastWeekOnChannel9UI.ViewModel
                 return;
             }
 
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+            Process.Start(new ProcessStartInfo
             {
                 FileName = SelectedC9Entry.EntryUrl,
                 UseShellExecute = true

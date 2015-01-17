@@ -1,13 +1,14 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Threading;
-using LastWeekOnChannel9UI.Model;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Threading;
+using HtmlAgilityPack;
+using LastWeekOnChannel9UI.Model;
 
 namespace LastWeekOnChannel9UI.ViewModel
 {
@@ -391,7 +392,7 @@ namespace LastWeekOnChannel9UI.ViewModel
             post.AppendLine("<a class=\"twitter-follow-button\" href=\"https://twitter.com/gduncan411\">Follow @gduncan411</a></p>");
 
             ClipboardHelper.CopyHtmlToClipBoard(post.ToString());
-            System.Windows.MessageBox.Show("Copied");
+            MessageBox.Show("Copied");
             
         }
 
@@ -531,7 +532,7 @@ namespace LastWeekOnChannel9UI.ViewModel
         {
             string result = string.Empty;
 
-            var htmWeb = new HtmlAgilityPack.HtmlWeb();
+            var htmWeb = new HtmlWeb();
             var htmDoc = htmWeb.Load(entryUrl);
 
             //var links = htmDoc.DocumentNode.SelectSingleNode("//div[@class='entry-body']");
@@ -563,7 +564,7 @@ namespace LastWeekOnChannel9UI.ViewModel
                 return;
             }
 
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+            Process.Start(new ProcessStartInfo
             {
                 FileName = SelectedStory.EntryUrl,
                 UseShellExecute = true

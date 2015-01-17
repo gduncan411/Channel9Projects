@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Windows;
 
@@ -43,7 +42,7 @@ namespace LastWeekOnChannel9UI
 
       DataObject obj = new DataObject();
 
-      using (System.IO.MemoryStream mem = new System.IO.MemoryStream(enc.GetBytes(html_total)))
+      using (MemoryStream mem = new MemoryStream(enc.GetBytes(html_total)))
       {
         obj.SetData(DataFormats.Html, mem, true);
         obj.SetText(html);

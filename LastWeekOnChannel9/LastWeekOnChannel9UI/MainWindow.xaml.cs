@@ -1,6 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using LastWeekOnChannel9UI.ViewModel;
-using System.Text.RegularExpressions;
+using Application = System.Windows.Forms.Application;
 
 namespace LastWeekOnChannel9UI
 {
@@ -16,10 +17,10 @@ namespace LastWeekOnChannel9UI
         {
             InitializeComponent();
             Closing += (s, e) => ViewModelLocator.Cleanup();
-            Title = Title + " (" + System.Windows.Forms.Application.ProductVersion + ")";
+            Title = Title + " (" + Application.ProductVersion + ")";
         }
 
-        private void DataGrid_LoadingRow(object sender, System.Windows.Controls.DataGridRowEventArgs e)
+        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             //http://andora.us/blog/2011/01/11/wpf-4-datagrid-getting-the-row-number-into-the-rowheader/
             e.Row.Header = (e.Row.GetIndex() + 1).ToString(); 
