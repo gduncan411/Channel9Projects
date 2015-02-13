@@ -42,6 +42,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Content="Channel 9 All Entries:" />
+            <Label Content="Currently Selected Entries:[0]" HorizontalAlignment="Right" />
             <DataGrid Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding C9Entries}" IsReadOnly="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectedItem="{Binding SelectedC9Entry}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
