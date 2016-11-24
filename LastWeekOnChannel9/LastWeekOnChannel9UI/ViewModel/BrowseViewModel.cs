@@ -89,6 +89,77 @@ namespace LastWeekOnChannel9UI.ViewModel
 
         }
 
+
+        private async Task LoadSinceLastEntries()
+        {
+            var page = 1;
+
+            var foundLastpost = false;
+
+            if (C9Entries == null)
+                C9Entries = new ObservableCollection<C9Entry>();
+
+            do
+            {
+                Task t = new Task(() =>
+                {
+
+                    var htmWeb = new HtmlWeb();
+                    var htmDoc = htmWeb.Load("http://channel9.msdn.com/Browse/AllContent?page=" + page.ToString());
+                    
+                    //var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
+                    var articles = htmDoc.DocumentNode.SelectNodes("//article");
+
+                    foreach (var article in articles)
+                    {
+                        string imageurl = article.ChildNodes[3].ChildNodes[1].GetAttributeValue("src", "");
+                        string url = "http://channel9.msdn.com" + article.ChildNodes[3].GetAttributeValue("href", "");
+
+                        string altTitle = article.ChildNodes[1].ChildNodes[3].ChildNodes[1].InnerText;
+                        string pubdate = "";
+
+                        if (altTitle.ToLowerInvariant().StartsWith("last week on channel 9:"))
+                        {
+                            foundLastpost = true;
+                        }
+
+
+                        DispatcherHelper.CheckBeginInvokeOnUI(
+                        () =>
+                        {
+                            C9Entries.Add(new C9Entry()
+                            {
+                                Title = altTitle,
+                                ImageUrl = imageurl,
+                                EntryUrl = url,
+                                PubDate = pubdate
+                            });
+                        });
+
+                        if (page >= 10)
+                        {
+                            foundLastpost = true;
+                        }
+
+                        if (foundLastpost)
+                        {
+                            break;
+                        }
+
+                    }
+
+                    _lastLoadedPage = page;
+                });
+
+                // start the task
+                t.Start();
+
+                await t;
+                page++;
+            } while (!foundLastpost);
+
+        }
+
         /// <summary>
         /// The <see cref="C9Entries" /> property's name.
         /// </summary>
@@ -198,6 +269,31 @@ namespace LastWeekOnChannel9UI.ViewModel
             IsBusy = true;
 
             Task t = LoadEntries(++_lastLoadedPage);
+
+            await t;
+
+            IsBusy = false;
+        }
+
+        private RelayCommand _loadAllSinceLastCommand;
+
+        /// <summary>
+        /// Gets the LoadNextPageCommand.
+        /// </summary>
+        public RelayCommand LoadAllSinceLastCommand
+        {
+            get
+            {
+                return _loadAllSinceLastCommand
+                    ?? (_loadAllSinceLastCommand = new RelayCommand(ExecuteLoadAllsinceLastCommand));
+            }
+        }
+
+        private async void ExecuteLoadAllsinceLastCommand()
+        {
+            IsBusy = true;
+
+            Task t = LoadSinceLastEntries();
 
             await t;
 

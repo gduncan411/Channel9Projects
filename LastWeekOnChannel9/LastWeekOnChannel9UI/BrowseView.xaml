@@ -65,6 +65,7 @@
             </DataGrid>
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Grid.Row="2" Content="Load Next Page" Margin="3" Command="{Binding LoadNextPageCommand, Mode=OneWay}" />
+                <Button Grid.Row="2" Content="Load All Since Last" Margin="3" Command="{Binding LoadAllSinceLastCommand, Mode=OneWay}" />
                 <Button Grid.Row="2" Content="Close and Return Selected" Margin="3" Command="{Binding CloseCommand, Mode=OneWay}" />
             </StackPanel>
         </Grid>
