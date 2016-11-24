@@ -536,8 +536,8 @@ namespace LastWeekOnChannel9UI.ViewModel
             var htmDoc = htmWeb.Load(entryUrl);
 
             //var links = htmDoc.DocumentNode.SelectSingleNode("//div[@class='entry-body']");
-            result = htmDoc.DocumentNode.SelectSingleNode("//div[@id='entry-body']").InnerHtml;
-            
+            result = htmDoc.DocumentNode.SelectSingleNode("//div[@class='ch9tabContent']").InnerHtml;
+
             return result;
         }
 

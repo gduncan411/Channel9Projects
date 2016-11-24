@@ -44,18 +44,26 @@ namespace LastWeekOnChannel9UI.ViewModel
                 var htmWeb = new HtmlWeb();
                 var htmDoc = htmWeb.Load("http://channel9.msdn.com/Browse/AllContent?page=" + page.ToString());
 
-                var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
+                //var links = htmDoc.DocumentNode.SelectNodes("//div[@class='entry-image']");
+                var articles = htmDoc.DocumentNode.SelectNodes("//article");
 
-                foreach (var link in links)
+                foreach (var article in articles)
                 {
                     //string imageurl = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("src", "");
                     //string altTitle = link.SelectSingleNode("//img[@class='thumb']").GetAttributeValue("alt", "");
                     //string url = "http://channel9.msdn.com" + link.SelectSingleNode("//a").GetAttributeValue("href", "");
 
-                    string imageurl = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("src", "");
-                    string altTitle = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("alt", "");
-                    string url = "http://channel9.msdn.com" + link.ChildNodes[1].GetAttributeValue("href", "");
-                    string pubdate = link.NextSibling.NextSibling.ChildNodes[3].ChildNodes[3].InnerText;
+                    //string imageurl = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("src", "");
+                    //string altTitle = link.ChildNodes[1].ChildNodes[1].GetAttributeValue("alt", "");
+                    //string url = "http://channel9.msdn.com" + link.ChildNodes[1].GetAttributeValue("href", "");
+                    //string pubdate = link.NextSibling.NextSibling.ChildNodes[3].ChildNodes[3].InnerText;
+
+                    string imageurl = article.ChildNodes[3].ChildNodes[1].GetAttributeValue("src", "");
+                    string url = "http://channel9.msdn.com" + article.ChildNodes[3].GetAttributeValue("href", "");
+                    
+                    string altTitle = article.ChildNodes[1].ChildNodes[3].ChildNodes[1].InnerText;
+                    string pubdate = "";
+                    
 
                     DispatcherHelper.CheckBeginInvokeOnUI(
                     () =>
