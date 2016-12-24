@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Threading;
@@ -112,40 +113,43 @@ namespace LastWeekOnChannel9UI.ViewModel
 
                     foreach (var article in articles)
                     {
-                        string imageurl = article.ChildNodes[3].ChildNodes[1].GetAttributeValue("src", "");
-                        string url = "http://channel9.msdn.com" + article.ChildNodes[3].GetAttributeValue("href", "");
-
-                        string altTitle = article.ChildNodes[1].ChildNodes[3].ChildNodes[1].InnerText;
-                        string pubdate = "";
-
-                        if (altTitle.ToLowerInvariant().StartsWith("last week on channel 9:"))
+                        if (article.ChildNodes.Count > 0)
                         {
-                            foundLastpost = true;
-                        }
+                            string imageurl = article.ChildNodes[3].ChildNodes[1].GetAttributeValue("src", "");
+                            string url = "http://channel9.msdn.com" +
+                                         article.ChildNodes[3].GetAttributeValue("href", "");
 
+                            string altTitle = article.ChildNodes[1].ChildNodes[3].ChildNodes[1].InnerText;
+                            string pubdate = "";
 
-                        DispatcherHelper.CheckBeginInvokeOnUI(
-                        () =>
-                        {
-                            C9Entries.Add(new C9Entry()
+                            if (altTitle.ToLowerInvariant().StartsWith("last week on channel 9:"))
                             {
-                                Title = altTitle,
-                                ImageUrl = imageurl,
-                                EntryUrl = url,
-                                PubDate = pubdate
-                            });
-                        });
+                                foundLastpost = true;
+                            }
 
-                        if (page >= 10)
-                        {
-                            foundLastpost = true;
+
+                            DispatcherHelper.CheckBeginInvokeOnUI(
+                                () =>
+                                {
+                                    C9Entries.Add(new C9Entry()
+                                    {
+                                        Title = altTitle,
+                                        ImageUrl = imageurl,
+                                        EntryUrl = url,
+                                        PubDate = pubdate
+                                    });
+                                });
+
+                            if (page >= 10)
+                            {
+                                foundLastpost = true;
+                            }
+
+                            if (foundLastpost)
+                            {
+                                break;
+                            }
                         }
-
-                        if (foundLastpost)
-                        {
-                            break;
-                        }
-
                     }
 
                     _lastLoadedPage = page;
@@ -250,6 +254,9 @@ namespace LastWeekOnChannel9UI.ViewModel
                 RaisePropertyChanged(() => SelectedC9Entries);
             }
         }
+
+
+        
         private RelayCommand _loadNextPageCommand;
 
         /// <summary>

@@ -18,6 +18,8 @@ namespace LastWeekOnChannel9UI
             BrowseViewModel vm = (BrowseViewModel)this.DataContext;
             vm.CloseAction = new Action(() => this.Close());
 
+            vm.LoadAllSinceLastCommand.Execute(null);
+
         }
     }
 }
